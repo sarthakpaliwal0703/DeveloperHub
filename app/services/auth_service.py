@@ -1,4 +1,7 @@
 from sqlalchemy.orm import Session
+from fastapi.security import OAuth2PasswordRequestForm
+from fastapi import Depends
+
 from app.repositories.user_repository import UserRepository
 from app.models.user import User
 from app.core.security import hash_password, verify_password, create_access_token
@@ -36,14 +39,14 @@ class AuthService:
         
         return self.user_repo.create_user(new_user)
     
-    def login_user(self, user: UserLogin):
-        verify_user = self.user_repo.get_user_by_email(user.email)
+    def login_user(self, form_data: OAuth2PasswordRequestForm = Depends()):
+        verify_user = self.user_repo.get_user_by_email(form_data.username)
         if not verify_user:
             raise AppException(
                 status_code=401,
                 message="Invalid email or password"
             )
-        if not verify_password(user.password, verify_user.hashed_password):
+        if not verify_password(form_data.password, verify_user.hashed_password):
             raise AppException(
                 status_code=401,
                 message="Invalid email or password"
