@@ -33,3 +33,11 @@ def require_company(current_user = Depends(get_current_user)):
             message="Only company can perform this action"
         )
     return current_user
+
+def required_developer(current_user= Depends(get_current_user)):
+    if current_user.role != UserRole.DEVELOPER:
+        raise AppException(
+            status_code=403,
+            message="Only developer can perform this action"
+        )
+    return current_user

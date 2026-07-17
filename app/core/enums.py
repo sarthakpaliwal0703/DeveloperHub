@@ -11,3 +11,9 @@ class EmploymentType(str, Enum):
     INTERNSHIP = "internship"
     CONTRACT = "contract"
     REMOTE = "remote"
+
+class ApplicationStatus(str, Enum):
+    PENDING = "pending"
+    ACCEPTED = "accepted"
+    REJECTED = "rejected"
+
