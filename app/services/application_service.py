@@ -37,3 +37,19 @@ class ApplicationService:
         )
         
         return self.application_repo.create_application(new_application)
+    
+    def get_applications_by_job(self, job_id: int, current_company):
+        job = self.job_repo.get_job_by_id(job_id)
+        if not job:
+            raise AppException(
+                status_code=404,
+                message="Job not found"
+            )
+        if job.company_id != current_company.id:
+            raise AppException(
+                status_code=403,
+                message="You are not allowed to view these applications"
+            )
+        applications = self.application_repo.get_application_by_job_id(job_id)
+
+        return applications
