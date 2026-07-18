@@ -1,4 +1,4 @@
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, EmailStr
 from datetime import datetime
 
 from app.core.enums import ApplicationStatus
@@ -21,3 +21,14 @@ class ApplicationResponse(BaseModel):
     model_config = ConfigDict(
         from_attributes=True
     )
+
+class ApplicationDetailsResponse(BaseModel):
+    id: int
+    resume: str
+    cover_letter: str
+    status: ApplicationStatus
+    developer_id: int
+    developer_name: str
+    developer_email: EmailStr
+    created_at: datetime
+    updated_at: datetime

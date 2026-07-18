@@ -1,4 +1,4 @@
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.models.base_model import BaseModel
 from app.core.enums import UserRole
 from typing import Optional
@@ -16,3 +16,9 @@ class User(BaseModel):
     profile_image: Mapped[str] = mapped_column(default="default-avatar.png")
     is_active: Mapped[bool] = mapped_column(default=True)
     is_verified: Mapped[bool] = mapped_column(default=False)
+
+    jobs = relationship("Job",
+                        back_populates="company",
+                        cascade="all, delete-orphan")
+    applications = relationship("Application",
+                                back_populates="developer")

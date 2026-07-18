@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 
 from app.repositories.application_repository import ApplicationRepository
 from app.repositories.job_repository import JobRepository
-from app.schemas.application import ApplicationCreate, ApplicationResponse
+from app.schemas.application import ApplicationCreate, ApplicationDetailsResponse
 from app.exceptions.handlers import AppException
 from app.models.application import Application
 
@@ -38,6 +38,8 @@ class ApplicationService:
         
         return self.application_repo.create_application(new_application)
     
+
+    #This route is for getting all applicants using job id who applied for a particular job 
     def get_applications_by_job(self, job_id: int, current_company):
         job = self.job_repo.get_job_by_id(job_id)
         if not job:
@@ -50,6 +52,20 @@ class ApplicationService:
                 status_code=403,
                 message="You are not allowed to view these applications"
             )
+        response = []
         applications = self.application_repo.get_application_by_job_id(job_id)
-
-        return applications
+        for application in applications:
+            response.append(
+                ApplicationDetailsResponse(
+                    id = application.id,
+                    resume = application.resume,
+                    cover_letter = application.cover_letter,
+                    status = application.status,
+                    developer_id = application.developer_id,
+                    developer_name = application.developer.full_name,
+                    developer_email = application.developer.email,
+                    created_at = application.created_at,
+                    updated_at = application.updated_at
+                )
+            )
+        return response
