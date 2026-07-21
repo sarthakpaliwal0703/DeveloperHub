@@ -35,3 +35,11 @@ class ApplicationDetailsResponse(BaseModel):
 
 class ApplicationStatusUpdate(BaseModel):
     status: ApplicationStatus
+
+
+#This is for seeing all application(job applied) by a developer
+class AllApplicationResponse(BaseModel):
+    title: str
+    full_name: str
+    status: ApplicationStatus
+    created_at: datetime

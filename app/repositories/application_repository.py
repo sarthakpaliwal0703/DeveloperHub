@@ -41,3 +41,11 @@ class ApplicationRepository:
         return(
             self.db.query(Application).filter(Application.job_id == job_id).all()
         )
+    
+    #This is for fetching all applications(job applied) by a developer
+    def get_applications_by_developer_id(self, developer_id: int):
+        return(
+            self.db.query(Application).filter(
+                Application.developer_id == developer_id
+            ).all()
+        )

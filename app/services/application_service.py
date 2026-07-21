@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 
 from app.repositories.application_repository import ApplicationRepository
 from app.repositories.job_repository import JobRepository
-from app.schemas.application import ApplicationCreate, ApplicationDetailsResponse, ApplicationStatusUpdate
+from app.schemas.application import ApplicationCreate, ApplicationDetailsResponse, ApplicationStatusUpdate, AllApplicationResponse
 from app.exceptions.handlers import AppException
 from app.models.application import Application
 from app.core.enums import ApplicationStatus
@@ -93,3 +93,18 @@ class ApplicationService:
         updated_application = self.application_repo.update_application(application)
 
         return updated_application
+    
+    #This is for getting all application(jobs applied) by a developer
+    def get_application_by_developer(self, current_developer):
+        all_applications = self.application_repo.get_applications_by_developer_id(current_developer.id)
+        responses = []
+        for application in all_applications:
+            responses.append(
+                AllApplicationResponse(
+                    title = application.job.title,
+                    full_name = application.job.company.full_name,
+                    status = application.status,
+                    created_at = application.created_at
+                )
+            )
+        return responses
