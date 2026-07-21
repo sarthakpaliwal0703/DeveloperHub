@@ -32,3 +32,6 @@ class ApplicationDetailsResponse(BaseModel):
     developer_email: EmailStr
     created_at: datetime
     updated_at: datetime
+
+class ApplicationStatusUpdate(BaseModel):
+    status: ApplicationStatus

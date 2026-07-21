@@ -2,9 +2,10 @@ from sqlalchemy.orm import Session
 
 from app.repositories.application_repository import ApplicationRepository
 from app.repositories.job_repository import JobRepository
-from app.schemas.application import ApplicationCreate, ApplicationDetailsResponse
+from app.schemas.application import ApplicationCreate, ApplicationDetailsResponse, ApplicationStatusUpdate
 from app.exceptions.handlers import AppException
 from app.models.application import Application
+from app.core.enums import ApplicationStatus
 
 class ApplicationService:
     def __init__(self, db: Session):
@@ -69,3 +70,26 @@ class ApplicationService:
                 )
             )
         return response
+    
+    #This is for updating status 
+    def update_status(self,application_id:int,current_company, status_update: ApplicationStatusUpdate):
+        application = self.application_repo.get_application_by_id(application_id)
+        if not application:
+            raise AppException(
+                status_code=404,
+                message="Application not found"
+            )
+        if application.job.company_id != current_company.id:
+            raise AppException(
+                status_code=403,
+                message="You are not allowed to view these applications"
+            )
+        if application.status == status_update.status:
+            raise AppException(
+                status_code=400,
+                message=f"Application is already {application.status.value.lower()}"
+            )
+        application.status = status_update.status
+        updated_application = self.application_repo.update_application(application)
+
+        return updated_application

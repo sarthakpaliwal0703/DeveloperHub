@@ -19,13 +19,19 @@ class ApplicationRepository:
     def get_application_by_id(self, application_id:int):
         return(
             self.db.query(Application).filter(
-                Application.job_id == application_id
+                Application.id == application_id
             ).first()
         )
     
     #This is for creating application data
     def create_application(self, application: Application):
         self.db.add(application)
+        self.db.commit()
+        self.db.refresh(application)
+        return application
+    
+    #This is for updating status
+    def update_application(self, application: Application):
         self.db.commit()
         self.db.refresh(application)
         return application
