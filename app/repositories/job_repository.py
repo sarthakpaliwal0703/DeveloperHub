@@ -22,3 +22,9 @@ class JobRepository:
        self.db.commit()
        self.db.refresh(job)
        return job
+    
+    #This is for updating a specific field in job
+    def update_specific_field(self, job:Job):
+        self.db.commit()
+        self.db.refresh(job)
+        return job
