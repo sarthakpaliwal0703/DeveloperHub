@@ -9,7 +9,7 @@ class JobRepository:
 
     def get_all_jobs(self):
         return(
-            self.db.query(Job).all()
+            self.db.query(Job).filter(Job.is_active == True).all()
         )
 
     def get_job_by_id(self, job_id: int):
@@ -25,6 +25,13 @@ class JobRepository:
     
     #This is for updating a specific field in job
     def update_specific_field(self, job:Job):
+        self.db.commit()
+        self.db.refresh(job)
+        return job
+
+    #This is for closing or reopening a specific job
+    def update_job_status(self, job: Job, is_active: bool):
+        job.is_active = is_active
         self.db.commit()
         self.db.refresh(job)
         return job

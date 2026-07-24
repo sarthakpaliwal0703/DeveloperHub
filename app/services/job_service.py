@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from fastapi import Depends
 
-from app.schemas.job import JobCreate, JobResponse, JobUpdate
+from app.schemas.job import JobCreate, JobResponse, JobUpdate, MessageResponse
 from app.core.dependencies import require_company
 from app.repositories.job_repository import JobRepository 
 from app.exceptions.handlers import AppException
@@ -67,3 +67,31 @@ class JobService:
             setattr(job, key, value)
         updated_job = self.job_repo.update_specific_field(job)
         return updated_job
+
+    #This is for closing a job
+    def update_job_status(self, job_id: int, current_company, is_active: bool):
+        job = self.job_repo.get_job_by_id(job_id)
+        if not job:
+            raise AppException(
+                status_code=404,
+                message="Job not found"
+            )
+        if job.company_id != current_company.id:
+            raise AppException(
+                status_code=403,
+                message="You are not allowed to update the status of this job"
+            )
+        if job.is_active == is_active:
+            message = (
+                "Job is already open"
+                if is_active
+                else "Job is already closed"
+            )
+            raise AppException(
+                status_code=400,
+                message=message
+            )
+        self.job_repo.update_job_status(job, is_active)
+        return MessageResponse(
+            message="Job status changed successfully"
+        )

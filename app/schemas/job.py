@@ -41,3 +41,6 @@ class JobUpdate(BaseModel):
     skills: Optional[str] = None
     employment_type: Optional[EmploymentType] = None
     is_active: Optional[bool] = None
+
+class MessageResponse(BaseModel):
+    message: str
